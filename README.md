@@ -13,7 +13,9 @@ composer require kylin987/think-orm-redis-cache
 ```
 ### 2、配置：
 ```
-//1、修改config/thinkorm.php，添加以下3个配置
+下面的1和2都属于个性配置，可以不配置，走默认redis，php7.4及以下可以不配置第3项
+
+1、修改config/thinkorm.php，添加以下3个配置
 
 //数据库缓存store
 'cache_store'       => 'ormCache',
@@ -22,7 +24,7 @@ composer require kylin987/think-orm-redis-cache
 //空数据是否仍然缓存
 'cache_always' => true,
 
-//2、修改config/redis.php，增加一个缓存store，名字ormCache和上面的配置保持一致，下面的配置根据需求自行配置
+2、修改config/redis.php，增加一个缓存store，名字ormCache和上面的配置保持一致，下面的配置根据需求自行配置
 
 // ormredis缓存
 'ormCache' => [
@@ -32,7 +34,7 @@ composer require kylin987/think-orm-redis-cache
     'database' => 5,
 ],
 
-//3、添加启动项文件，把test文件夹下的boot文件夹复制到webman根目录下的support文件夹内
+3、添加启动项文件，把test文件夹下的boot文件夹复制到webman根目录下的support文件夹内
 
 ```
 ### 2、使用：

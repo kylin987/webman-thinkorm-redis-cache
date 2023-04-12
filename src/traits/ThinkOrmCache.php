@@ -31,7 +31,8 @@ trait ThinkOrmCache
     //redis删除
     private static function delKey($key)
     {
-        return Redis::instance()->connection(config('thinkorm.cache_store'))->client()->del($key);
+        $connection = config('thinkorm.cache_store') ?? 'default';
+        return Redis::instance()->connection($connection)->client()->del($key);
     }
 
     //获取redis键和主pk
