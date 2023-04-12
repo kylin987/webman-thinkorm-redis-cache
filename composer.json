@@ -1,6 +1,6 @@
 {
-  "name": "kylin987/think-orm-redis-cache",
-  "description": "基于think-orm和redis开发的跨项目共享cache",
+  "name": "kylin987/webman-thinkorm-redis-cache",
+  "description": "适用于webman下基于think-orm和redis开发的跨项目共享cache",
   "license": "MIT",
   "type": "library",
   "authors": [
