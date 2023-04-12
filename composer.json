@@ -1,0 +1,23 @@
+{
+  "name": "kylin987/think-orm-redis-cache",
+  "description": "基于think-orm和redis开发的跨项目共享cache",
+  "license": "MIT",
+  "type": "library",
+  "authors": [
+    {
+      "name": "kylin87",
+      "email": "kylin87@qq.com"
+    }
+  ],
+  "require": {
+    "php": ">=7.4",
+    "symfony/cache": "^6.2",
+    "psr/container": "^1.1.1",
+    "webman/think-orm": "^1.1"
+  },
+  "autoload": {
+    "psr-4": {
+      "Kylin987\\ThinkOrm\\RedisCache\\": "src/"
+    }
+  }
+}
