@@ -3,7 +3,7 @@
 
 ## 安装
 ```
-composer require kylin987/think-orm-redis-cache
+composer require kylin987/webman-thinkorm-redis-cache
 ```
 
 ## 使用
