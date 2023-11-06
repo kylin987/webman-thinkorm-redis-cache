@@ -53,7 +53,7 @@ trait ThinkOrmCache
     }
 
     //获取redis键和主pk
-    private static function getCacheKey($model, $id = null)
+    private static function getCacheKey($model, $id = null, $option = [])
     {
         $pk = $model->cachePk ?? 'id';
         if (isset($option['cachePk']) && !empty($option['cachePk'])) {
