@@ -13,7 +13,6 @@ composer require kylin987/webman-thinkorm-redis-cache
 ```
 ### 2、配置：
 ```
-下面的1和2都属于个性配置，可以不配置，走默认redis，php7.4及以下可以不配置第3项
 
 1、修改config/thinkorm.php，添加以下3个配置
 
