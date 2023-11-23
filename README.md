@@ -35,6 +35,7 @@ composer require kylin987/webman-thinkorm-redis-cache
 ],
 
 3、添加启动项文件，把test文件夹下的boot文件夹复制到webman根目录下的support文件夹内
+4、config/bootstrap.php中的数组增加一行\support\boot\ThinkOrm::class
 
 ```
 ### 2、使用：

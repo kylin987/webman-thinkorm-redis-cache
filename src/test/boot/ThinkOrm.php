@@ -16,25 +16,12 @@ use Symfony\Component\Cache\Adapter\RedisAdapter;
 use Symfony\Component\Cache\Psr16Cache;
 use think\facade\Db;
 use Webman\Bootstrap;
-use Workerman\Timer;
 
 class ThinkOrm implements Bootstrap
 {
     // 进程启动时调用
     public static function start($worker)
     {
-        Db::setConfig(config('thinkorm'));
-        // 开启字段缓存
         Db::setCache(new Psr16Cache(new RedisAdapter(Redis::connection(config('thinkorm.cache_store'))->client())));
-        if ($worker) {
-            Timer::add(10, function () {
-                $connections = config('thinkorm.connections', []);
-                foreach ($connections as $key => $item) {
-                    if ($item['type'] == 'mysql') {
-                        Db::connect($key)->query('select 1');
-                    }
-                }
-            });
-        }
     }
 }
