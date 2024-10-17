@@ -42,7 +42,16 @@ trait ThinkOrmCache
         return self::cache($key, $cacheExpTime)->where($pk, '=', $id)->find();
     }
 
-    public static function getRedisCacheByWhere($where, $orderBy = 'id ASC', $getDb = false)
+    /**
+     * @param $where array // 查询条件
+     * @param $orderBy string // 排序
+     * @param bool $getDb
+     * @return array|mixed
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\DbException
+     * @throws \think\db\exception\ModelNotFoundException
+     */
+    public static function getRedisCacheByWhere(array $where, string $orderBy = 'id ASC', $getDb = false)
     {
         list($key, $pk, $cacheExpTime) = self::getCacheKey(self::getModel(), null, ['where' => $where, 'orderBy' => $orderBy]);
         if ($getDb) {
