@@ -12,32 +12,56 @@ composer require kylin987/webman-thinkorm-redis-cache
 参考test/model/User.php和Mini.php文件
 ```
 ### 2、配置：
+
+**第 1 步：插件配置（自动生成，无需手动新建）**
+
+composer 安装本包时，会自动把内置配置拷贝到
+`config/plugin/kylin987/webman-thinkorm-redis-cache/` 目录，webman 会自动加载，目录结构：
+
+- `app.php`：是否启用本插件（开关）
+- `config.php`：具体配置参数
+- `bootstrap.php`：启动项（自动注册）
+
+其中 `config.php` 默认内容：
+
+```php
+return [
+    // 数据库缓存 store，需与 config/redis.php 里的连接名一致
+    'cache_store'   => 'ormCache',
+    // 缓存时间（秒）
+    'cache_exptime' => 172800,
+    // 空数据是否仍然缓存
+    'cache_always'  => true,
+];
 ```
 
-1、修改config/thinkorm.php，添加以下3个配置
+如需修改默认值，直接编辑
+`config/plugin/kylin987/webman-thinkorm-redis-cache/config.php` 即可。
 
-//数据库缓存store
-'cache_store'       => 'ormCache',
-//缓存时间
-'cache_exptime' => 172800,
-//空数据是否仍然缓存
-'cache_always' => true,
+**第 2 步：配置 redis 缓存连接**
 
-2、修改config/redis.php，增加一个缓存store，名字ormCache和上面的配置保持一致，下面的配置根据需求自行配置
+`config.php` 里的 `cache_store`（默认 `ormCache`）必须对应 `config/redis.php` 里的一个连接名。
+在 `config/redis.php` 中新增名为 `ormCache` 的连接：
 
-// ormredis缓存
+```php
+// orm 缓存专用 redis 连接（连接名需与上面的 cache_store 一致）
 'ormCache' => [
-    'host' => '127.0.0.1',
+    'host'     => '127.0.0.1',
     'password' => '123456',
-    'port' => 6379,
-    'database' => 5,
+    'port'     => 6379,
+    'database' => 5,   // 建议用独立库，与业务缓存隔离
 ],
-
-3、添加启动项文件，把test文件夹下的boot文件夹复制到webman根目录下的support文件夹内
-4、config/bootstrap.php中的数组增加一行\support\boot\ThinkOrm::class
-
 ```
-### 2、使用：
+
+> 注意：连接名必须与 `cache_store` 保持一致。若想改用其它连接名（如 `default`），
+> 需同步把 `config.php` 里的 `cache_store` 改成同一个名字。
+
+**第 3 步：启动项（自动注册，无需手动操作）**
+
+本包通过插件 `bootstrap.php` 自动注册启动类，进程启动时会自动给 think-orm 注入 redis 缓存，
+无需再复制启动文件或修改 `config/bootstrap.php`。
+
+### 3、使用：
 ```
 //获取数据
 $id = 10;

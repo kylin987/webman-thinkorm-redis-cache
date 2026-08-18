@@ -2,6 +2,7 @@
 
 namespace Kylin987\ThinkOrm\RedisCache\traits;
 
+use Kylin987\ThinkOrm\RedisCache\CacheConfig;
 use support\Redis;
 
 trait ThinkOrmCache
@@ -13,7 +14,7 @@ trait ThinkOrmCache
         if ($getDb) {
             self::delKey($key);
         }
-        $always = config('thinkorm.cache_always') ?? false;
+        $always = CacheConfig::get('cache_always', false);
         if ($always){
             return self::cacheAlways($key, $cacheExpTime)->where($pk, '=', $id)->find();
         }
@@ -30,7 +31,7 @@ trait ThinkOrmCache
     //redis删除
     private static function delKey($key)
     {
-        $connection = config('thinkorm.cache_store') ?? 'default';
+        $connection = CacheConfig::get('cache_store', 'default');
         return Redis::instance()->connection($connection)->client()->del($key);
     }
 
@@ -41,7 +42,7 @@ trait ThinkOrmCache
         if (isset($option['cachePk']) && !empty($option['cachePk'])) {
             $pk = $option['cachePk'];
         }
-        $cacheExpTime = $model->cacheExpTime ?? config('thinkorm.cache_exptime');
+        $cacheExpTime = $model->cacheExpTime ?? CacheConfig::get('cache_exptime');
         if (isset($option['cacheExpTime']) && !empty($option['cacheExpTime'])) {
             $cacheExpTime = $option['cacheExpTime'];
         }
