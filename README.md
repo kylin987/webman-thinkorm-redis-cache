@@ -61,6 +61,31 @@ return [
 本包通过插件 `bootstrap.php` 自动注册启动类，进程启动时会自动给 think-orm 注入 redis 缓存，
 无需再复制启动文件或修改 `config/bootstrap.php`。
 
+### 升级迁移（老项目兼容）
+
+本包从旧版配置（手动改 `config/thinkorm.php` + 复制 `support/boot/ThinkOrm.php` +
+在 `config/bootstrap.php` 注册 `\support\boot\ThinkOrm::class`）迁移到插件配置体系时，
+采用「增量迁移」，不会破坏老项目的运行。
+
+**兼容优先级**
+
+配置读取顺序为：`config('thinkorm.cache_*')` 优先，旧值不存在时才读取插件配置。
+因此老项目升级后，即使不做任何迁移，也会继续使用原来的 Redis 连接与 TTL；
+新项目则直接使用插件配置。
+
+**迁移步骤（可选，让老项目切到插件配置体系）**
+
+1. 删除 `config/bootstrap.php` 中的 `\support\boot\ThinkOrm::class` 一行；
+2. 删除 `support/boot/ThinkOrm.php` 文件；
+3. 把 `config/thinkorm.php` 中的 `cache_store` / `cache_exptime` / `cache_always` 三项
+   复制到 `config/plugin/kylin987/webman-thinkorm-redis-cache/config.php`；
+4. 从 `config/thinkorm.php` 中删除这三项（可选，删除后即完全切到插件配置）。
+
+完成以上步骤后，插件 Bootstrap 会自动接管缓存注入。
+
+> 说明：`app.php` 中的 `enable` 开关同样有效，设为 `false` 即可整体停用本插件的配置与启动项，
+> 此时若仍保留旧版 `thinkorm.*` 配置，则继续走旧逻辑。
+
 ### 3、使用：
 ```
 //获取数据
