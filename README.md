@@ -98,3 +98,49 @@ $id = 10;
 $user = User::getRedisCache($id);
 User::delCache($user);
 ```
+
+### 固定组合键缓存
+
+模型可以把 `cachePk` 配置为多个字段。组合必须唯一，建议建立数据库联合唯一索引；
+原来的单字段配置和调用方式不变。
+
+```php
+class TenantUser extends \think\Model
+{
+    use \Kylin987\ThinkOrm\RedisCache\traits\ThinkOrmCache;
+
+    protected $cachePk = ['tenant_id', 'user_id'];
+
+    public static function onAfterUpdate(\think\Model $model): void
+    {
+        self::delCache($model);
+    }
+
+    public static function onAfterDelete(\think\Model $model): void
+    {
+        self::delCache($model);
+    }
+}
+
+$user = TenantUser::getRedisCache(['tenant_id' => 10, 'user_id' => 20]);
+
+// 第二个参数为 true 时删除缓存并重新查询数据库。
+$user = TenantUser::getRedisCache(['tenant_id' => 10, 'user_id' => 20], true);
+
+// 先读取完整模型再更新；组合字段变化时 delCache 会清理新旧两个键。
+$user->save(['user_id' => 21]);
+
+// 手动清理或删除记录。
+TenantUser::delCache($user);
+$user->delete();
+```
+
+- 参数必须包含且仅包含模型配置的字段，字段顺序不影响缓存键，只支持等值查询一条记录。
+- 字段值只接受整数或字符串，`0` 合法；整数 `10` 与字符串 `'10'` 使用相同缓存键。
+- 组合查询只缓存存在的记录，不受 `cache_always` 配置影响。
+- 更新、删除和手动清理时，模型的当前数据及非空原始数据必须包含全部组合字段；
+  不要通过只含主键和修改字段的局部模型更新组合缓存记录。
+- 直接 `where()->update()` / `where()->delete()` 的批量操作不会触发模型事件，
+  需要调用方主动清理受影响记录的新旧组合缓存。
+- 各项目共享缓存时，应配置相同的字段顺序，并使用一致的字段值表示
+  （例如不要交替使用 `'010'` 和 `10`，或大小写不同但数据库认为相同的字符串）。
